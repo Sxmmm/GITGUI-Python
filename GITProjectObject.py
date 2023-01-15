@@ -54,3 +54,24 @@ class GITProjectObject:
             )
             for submodule in self._repo.submodules:
                 submodule.update(init=True)
+
+    def get_status_unstaged(self):
+        changedFiles = [item.a_path for item in self._repo.index.diff(None)]
+        output = ""
+        for line in changedFiles:
+            output = output + "  " + line + "\n"
+        return output
+
+    def get_status_untracked(self):
+        changedFiles = self._repo.untracked_files
+        output = ""
+        for line in changedFiles:
+            output = output + "  " + line + "\n"
+        return output
+
+    def get_status_staged(self):
+        changedFiles = [item.a_path for item in self._repo.index.diff("Head")]
+        output = ""
+        for line in changedFiles:
+            output = output + "  " + line + "\n"
+        return output

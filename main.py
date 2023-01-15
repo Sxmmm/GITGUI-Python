@@ -83,26 +83,51 @@ class TabObject:
     _repoLabelDir: customtkinter.CTkButton
     _testButton: customtkinter.CTkButton
     _tabview: customtkinter.CTkTabview
+    _statusTextBox: customtkinter.CTkTextbox
 
     def __init__(self, data: GITProjectObject, tabview: customtkinter.CTkTabview):
-        self._tabName = data._repoName
+        self._tabName = data._repoName + ("-b2c" if data._isB2C is True else "-b2b")
         self._tabData = data
         self._tabview = tabview
 
         self._repoLabelDir = customtkinter.CTkLabel(
-            self._tabview.tab(data._repoName), text=data._projectPath + data._repoName
+            self._tabview.tab(self._tabName), text=data._projectPath + data._repoName
         )
         self._repoLabelDir.grid(row=0, column=0, padx=0, pady=(0, 0))
 
         self._testButton = customtkinter.CTkButton(
-            self._tabview.tab(data._repoName),
+            self._tabview.tab(self._tabName),
             text="test",
             command=self.test_button_event,
         )
-        self._testButton.grid(row=0, column=0, padx=20, pady=(60, 10))
+        self._testButton.grid(row=1, column=0, padx=20, pady=(0, 10))
+
+        self._statusButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Status",
+            command=self.status_button_event,
+        )
+        self._statusButton.grid(row=2, column=0, padx=20, pady=(0, 10))
+
+        self._statusTextBox = customtkinter.CTkTextbox(
+            self._tabview.tab(self._tabName), width=250
+        )
+        self._statusTextBox.grid(
+            row=0, rowspan=3, column=1, padx=20, pady=(20, 0), sticky="nsew"
+        )
+        self._statusTextBox.configure(state="disabled")
 
     def test_button_event(self):
         print(self._tabData._repoName)
+
+    def status_button_event(self):
+        self._statusTextBox.configure(state="normal", text_color="#FF0000")
+        self._statusTextBox.delete("1.0", customtkinter.END)
+        self._statusTextBox.insert("0.0", self._tabData.get_status_untracked())
+        self._statusTextBox.insert("0.0", "Untracked files:\n")
+        self._statusTextBox.insert("0.0", self._tabData.get_status_unstaged())
+        self._statusTextBox.insert("0.0", "Changes not staged for commit:\n")
+        self._statusTextBox.configure(state="disabled")
 
 
 class App(customtkinter.CTk):
@@ -150,7 +175,7 @@ class App(customtkinter.CTk):
         dialog = CTkInputDialog(text=".git url")
 
         dialog_data = GITProjectObject(dialog.get_input(), dialog.isB2C)
-        dialog_data.print_data()
+        # dialog_data.print_data()
         dialog_data.clone()
         self.add_tab(dialog_data)
 
@@ -159,19 +184,18 @@ class App(customtkinter.CTk):
             if data._giturl is "":
                 return
 
-        self.tabview.add(data._repoName)
-
-        self.tabview.tab(data._repoName).grid_columnconfigure(0, weight=1)
-
+        repoName = data._repoName + ("-b2c" if data._isB2C is True else "-b2b")
+        self.tabview.add(repoName)
+        self.tabview.tab(repoName).grid_columnconfigure(0, weight=1)
         self._gitProjectTabs.append(TabObject(data, self.tabview))
 
     def loadall_button_event(self):
-
         for dir in next(os.walk("/Projects/"))[1]:
             data = GITProjectObject(isb2c=True, repoName=dir)
             self.add_tab(data, True)
-        # for dir in next(os.walk("/B2BProjects/"))[1]:
-        #     print(dir)
+        for dir in next(os.walk("/B2BProjects/"))[1]:
+            data = GITProjectObject(isb2c=False, repoName=dir)
+            self.add_tab(data, True)
 
     def test_button_event(self, text: str):
         print(text)
