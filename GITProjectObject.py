@@ -75,3 +75,15 @@ class GITProjectObject:
         for line in changedFiles:
             output = output + "  " + line + "\n"
         return output
+
+    def get_active_branch(self):
+        return self._repo.active_branch
+
+    def commit_push_changes(self, type: str, code: str, message: str):
+        commitString = (
+            "["
+            + type
+            + ("] " if type == "UPDATE" else (" " + code.strip() + "] "))
+            + message
+        )
+        print(commitString)
