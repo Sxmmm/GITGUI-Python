@@ -87,3 +87,5 @@ class GITProjectObject:
             + message
         )
         print(commitString)
+        self._repo.index.commit(commitString)
+        self._repo.remotes.origin.push()

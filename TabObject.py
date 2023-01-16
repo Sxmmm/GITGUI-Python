@@ -1,4 +1,6 @@
+import tkinter
 import customtkinter
+import os
 
 from GITProjectObject import GITProjectObject
 
@@ -10,6 +12,12 @@ class TabObject:
     _repoActiveBranch: customtkinter.CTkLabel
     _fetchButton: customtkinter.CTkButton
     _pullButton: customtkinter.CTkButton
+    _statusButton: customtkinter.CTkButton
+    _addAllButton: customtkinter.CTkButton
+    _addSelectionButton: customtkinter.CTkButton
+    _unstageSelectionButton: customtkinter.CTkButton
+    _unstageAllButton: customtkinter.CTkButton
+    _vscodeButton: customtkinter.CTkButton
     _tabview: customtkinter.CTkTabview
     _unstagedStatusTextBox: customtkinter.CTkTextbox
     _commitTextBox: customtkinter.CTkTextbox
@@ -25,13 +33,13 @@ class TabObject:
         self._repoLabelDir = customtkinter.CTkLabel(
             self._tabview.tab(self._tabName), text=data._projectPath + data._repoName
         )
-        self._repoLabelDir.grid(row=0, column=0, padx=0, pady=(0, 0))
+        self._repoLabelDir.grid(row=0, column=0, columnspan=2, padx=0, pady=(0, 0))
 
         self._repoActiveBranch = customtkinter.CTkLabel(
             self._tabview.tab(self._tabName),
             text="Active Branch: " + str(data.get_active_branch()),
         )
-        self._repoActiveBranch.grid(row=1, column=0, padx=0, pady=(0, 0))
+        self._repoActiveBranch.grid(row=1, column=0, columnspan=2, padx=0, pady=(0, 0))
 
         self._fetchButton = customtkinter.CTkButton(
             self._tabview.tab(self._tabName),
@@ -56,6 +64,46 @@ class TabObject:
             width=100,
         )
         self._statusButton.grid(row=3, column=0, padx=20, pady=(0, 10))
+
+        self._addAllButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Add all",
+            command=self.add_all_button_event,
+            width=100,
+        )
+        self._addAllButton.grid(row=4, column=0, padx=20, pady=(0, 10))
+
+        self._addSelectionButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Add select",
+            command=self.add_selection_button_event,
+            width=100,
+        )
+        self._addSelectionButton.grid(row=5, column=0, padx=20, pady=(0, 10))
+
+        self._unstageAllButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Unstage all",
+            command=self.unstage_all_button_event,
+            width=100,
+        )
+        self._unstageAllButton.grid(row=4, column=1, padx=20, pady=(0, 10))
+
+        self._unstageSelectionButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Unstage select",
+            command=self.unstage_selection_button_event,
+            width=100,
+        )
+        self._unstageSelectionButton.grid(row=5, column=1, padx=20, pady=(0, 10))
+
+        self._vscodeButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="VSCode",
+            command=self.open_code_button_event,
+            width=100,
+        )
+        self._vscodeButton.grid(row=6, column=0, padx=20, pady=(0, 10))
 
         self._stagedStatusTextBox = customtkinter.CTkTextbox(
             self._tabview.tab(self._tabName), width=350, height=150
@@ -139,9 +187,34 @@ class TabObject:
         self._stagedStatusTextBox.insert("0.0", "Changes to be committed:\n")
         self._stagedStatusTextBox.configure(state="disabled")
 
+    def add_all_button_event(self):
+        self._tabData._repo.git.add("--all")
+        self.status_button_event()
+
+    def add_selection_button_event(self):
+        tkinter.Tk().withdraw()  # prevents an empty tkinter window from appearing
+        path = tkinter.filedialog.askopenfilename()
+        self._tabData._repo.git.add(path)
+        self.status_button_event()
+
+    def unstage_selection_button_event(self):
+        tkinter.Tk().withdraw()  # prevents an empty tkinter window from appearing
+        path = tkinter.filedialog.askopenfilename()
+        self._tabData._repo.git.reset(path)
+        # self._tabData._repo.git.execute(["git", "commit", "-m", path])
+        self.status_button_event()
+
+    def unstage_all_button_event(self):
+        self._tabData._repo.git.reset()
+        self.status_button_event()
+
+    def open_code_button_event(self):
+        os.system("code " + self._tabData._projectPath + self._tabData._repoName)
+
     def commit_button_event(self):
         self._tabData.commit_push_changes(
             self._commitTypeBox.get(),
             self._commitCodeTextBox.get("1.0", customtkinter.END),
             self._commitTextBox.get("1.0", customtkinter.END),
         )
+        self.status_button_event()

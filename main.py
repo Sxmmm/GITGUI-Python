@@ -105,7 +105,9 @@ class App(customtkinter.CTk):
             self.sidebar_frame, text="Clone", command=self.open_input_dialog_event
         )
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Load")
+        self.sidebar_button_2 = customtkinter.CTkButton(
+            self.sidebar_frame, text="Load", command=self.load_button_event
+        )
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(
             self.sidebar_frame, text="Load All", command=self.loadall_button_event
@@ -141,6 +143,17 @@ class App(customtkinter.CTk):
         for dir in next(os.walk("/B2BProjects/"))[1]:
             data = GITProjectObject(isb2c=False, repoName=dir)
             self.add_tab(data, True)
+
+    def load_button_event(self):
+        tkinter.Tk().withdraw()  # prevents an empty tkinter window from appearing
+        folder_path = tkinter.filedialog.askdirectory()
+        b2c: bool = True
+
+        if "B2B" in folder_path:
+            b2c = False
+
+        data = GITProjectObject(isb2c=b2c, repoName=os.path.basename(folder_path))
+        self.add_tab(data, True)
 
     def test_button_event(self, text: str):
         print(text)
