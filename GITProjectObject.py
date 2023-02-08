@@ -89,3 +89,14 @@ class GITProjectObject:
         print(commitString)
         self._repo.index.commit(commitString)
         self._repo.remotes.origin.push()
+
+    def checkout_project_branch(self, branch: str):
+        for ref in self._repo.references:
+            if branch == ref.name:
+                self._repo.git.checkout(branch)
+
+    def checkout_fw_branch(self, branch: str):
+        fw_repo = git.Repo(self._projectPath + self._repoName + "/igb-framework")
+        for ref in fw_repo.references:
+            if branch == ref.name:
+                fw_repo.git.checkout(branch)

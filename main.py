@@ -1,7 +1,11 @@
+import sys
 import tkinter
 import customtkinter
 
+from urllib.request import urlopen
+
 from GITProjectObject import GITProjectObject
+from InputBoxes import CTkInputDialog
 from TabObject import TabObject
 
 import os
@@ -14,70 +18,20 @@ customtkinter.set_default_color_theme(
     "blue"
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
-
-class CTkInputDialog(customtkinter.CTkInputDialog):
-    def _create_widgets(self):
-        super()._create_widgets()
-
-        self.isB2C = True
-        self.isOkPressed = False
-
-        self._cancel_button = customtkinter.CTkButton(
-            master=self,
-            width=100,
-            border_width=0,
-            fg_color=self._button_fg_color,
-            hover_color=self._button_hover_color,
-            text_color=self._button_text_color,
-            text="Cancel",
-            command=self._cancel_event,
-        )
-        self._cancel_button.grid(
-            row=2, column=1, columnspan=1, padx=(10, 20), pady=(0, 20), sticky="ew"
-        )
-
-        self.radiobutton_frame = customtkinter.CTkFrame(self)
-        self.radiobutton_frame.grid(
-            row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew"
-        )
-        self.radio_var = tkinter.IntVar(value=0)
-        self.label_radio_group = customtkinter.CTkLabel(
-            master=self.radiobutton_frame, text="Game Type"
-        )
-        self.label_radio_group.grid(
-            row=0, column=2, columnspan=1, padx=10, pady=10, sticky=""
-        )
-        self.radio_button_1 = customtkinter.CTkRadioButton(
-            master=self.radiobutton_frame,
-            variable=self.radio_var,
-            value=0,
-            text="B2C",
-            command=self._set_b2c,
-        )
-        self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-        self.radio_button_2 = customtkinter.CTkRadioButton(
-            master=self.radiobutton_frame,
-            variable=self.radio_var,
-            value=1,
-            text="B2B",
-            command=self._set_b2b,
-        )
-        self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-
-    def _ok_event(self, event=None):
-        self.isOkPressed = True
-        super()._ok_event()
-
-    def _set_b2c(self):
-        self.isB2C = True
-
-    def _set_b2b(self):
-        self.isB2C = False
+currentVersion = "0.0.1"
 
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+
+        def resource_path(relative_path):
+            try:
+                base_path = sys._MEIPASS
+            except Exception:
+                base_path = os.path.abspath(".")
+
+            return os.path.join(base_path, relative_path)
 
         self._gitProjectTabs = []
 
@@ -85,6 +39,7 @@ class App(customtkinter.CTk):
         self.title("Sam GIT GUI")
         self.geometry(f"{1100}x{580}")
         self.resizable(False, False)
+        self.wm_iconbitmap(resource_path("logo.ico"))
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
@@ -113,6 +68,18 @@ class App(customtkinter.CTk):
             self.sidebar_frame, text="Load All", command=self.loadall_button_event
         )
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
+        self.sidebar_button_4 = customtkinter.CTkButton(
+            self.sidebar_frame,
+            text="Check for updates",
+            command=self.check_for_updates_event,
+        )
+        self.sidebar_button_4.grid(row=6, column=0, padx=20, pady=10)
+        self.version_label = customtkinter.CTkLabel(
+            self.sidebar_frame,
+            text=currentVersion,
+            font=customtkinter.CTkFont(size=10),
+        )
+        self.version_label.grid(row=7, column=0, padx=20, pady=(20, 10))
 
         # create tabview
         self.tabview = customtkinter.CTkTabview(self, width=250, height=500)
@@ -160,6 +127,21 @@ class App(customtkinter.CTk):
 
     def test_button_event(self, text: str):
         print(text)
+
+    def check_for_updates_event(self):
+        URL = urlopen("https://sxmhosts.000webhostapp.com/")
+        data = URL.read().decode("utf-8")
+
+        if data == currentVersion:
+            print("App is up to date!")
+        else:
+            print(
+                "App is not up to date! App is on version "
+                + currentVersion
+                + " but could be on version "
+                + data
+                + "!"
+            )
 
 
 if __name__ == "__main__":

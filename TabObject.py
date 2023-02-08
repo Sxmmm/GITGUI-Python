@@ -3,6 +3,7 @@ import customtkinter
 import os
 
 from GITProjectObject import GITProjectObject
+from InputBoxes import CTkCheckoutcDialog
 
 
 class TabObject:
@@ -111,7 +112,7 @@ class TabObject:
         self._checkoutButton = customtkinter.CTkButton(
             self._tabview.tab(self._tabName),
             text="Checkout",
-            # command=self.open_code_button_event,
+            command=self.checkout_project_branch,
             width=100,
         )
         self._checkoutButton.grid(row=6, column=0, padx=20, pady=(0, 10))
@@ -119,7 +120,7 @@ class TabObject:
         self._checkoutFWButton = customtkinter.CTkButton(
             self._tabview.tab(self._tabName),
             text="Checkout FW",
-            # command=self.open_code_button_event,
+            command=self.checkout_fw_branch,
             width=100,
         )
         self._checkoutFWButton.grid(row=6, column=1, padx=20, pady=(0, 10))
@@ -237,6 +238,33 @@ class TabObject:
 
     def open_code_button_event(self):
         os.system("code " + self._tabData._projectPath + self._tabData._repoName)
+
+    def checkout_project_branch(self):
+        dialog = CTkCheckoutcDialog(text="Checkout Branch", title="Checkout Branch")
+        branch_name = dialog.get_input()
+
+        if branch_name is "":
+            return
+
+        self._tabData.checkout_project_branch(branch_name)
+        self.update_branches()
+
+    def checkout_fw_branch(self):
+        dialog = CTkCheckoutcDialog(
+            text="Checkout FW Branch", title="Checkout FW Branch"
+        )
+        branch_name = dialog.get_input()
+
+        if branch_name is "":
+            return
+
+        self._tabData.checkout_fw_branch(branch_name)
+        self.update_branches()
+
+    def update_branches(self):
+        self._repoActiveBranch.configure(
+            text="Active Branch: " + str(self._tabData.get_active_branch())
+        )
 
     def commit_button_event(self):
         self._tabData.commit_push_changes(
