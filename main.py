@@ -147,6 +147,9 @@ class App(customtkinter.CTk):
     def load_button_event(self):
         tkinter.Tk().withdraw()  # prevents an empty tkinter window from appearing
         folder_path = tkinter.filedialog.askdirectory()
+        if folder_path is "":
+            return
+
         b2c: bool = True
 
         if "B2B" in folder_path:

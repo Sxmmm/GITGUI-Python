@@ -18,6 +18,9 @@ class TabObject:
     _unstageSelectionButton: customtkinter.CTkButton
     _unstageAllButton: customtkinter.CTkButton
     _vscodeButton: customtkinter.CTkButton
+    _checkoutButton: customtkinter.CTkButton
+    _checkoutFWButton: customtkinter.CTkButton
+    _checkoutB2BButton: customtkinter.CTkButton
     _tabview: customtkinter.CTkTabview
     _unstagedStatusTextBox: customtkinter.CTkTextbox
     _commitTextBox: customtkinter.CTkTextbox
@@ -103,7 +106,31 @@ class TabObject:
             command=self.open_code_button_event,
             width=100,
         )
-        self._vscodeButton.grid(row=6, column=0, padx=20, pady=(0, 10))
+        self._vscodeButton.grid(row=7, column=0, padx=20, pady=(0, 10))
+
+        self._checkoutButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Checkout",
+            # command=self.open_code_button_event,
+            width=100,
+        )
+        self._checkoutButton.grid(row=6, column=0, padx=20, pady=(0, 10))
+
+        self._checkoutFWButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Checkout FW",
+            # command=self.open_code_button_event,
+            width=100,
+        )
+        self._checkoutFWButton.grid(row=6, column=1, padx=20, pady=(0, 10))
+
+        self._checkoutB2BButton = customtkinter.CTkButton(
+            self._tabview.tab(self._tabName),
+            text="Checkout B2B",
+            # command=self.open_code_button_event,
+            width=100,
+        )
+        self._checkoutB2BButton.grid(row=6, column=2, padx=20, pady=(0, 10))
 
         self._stagedStatusTextBox = customtkinter.CTkTextbox(
             self._tabview.tab(self._tabName), width=350, height=150
