@@ -15,14 +15,12 @@ from TabObject import TabObject
 import os
 
 
-customtkinter.set_appearance_mode(
-    "System"
-)  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme(
     "blue"
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
-currentVersion = "0.0.1"
+currentVersion = "0.0.2"
 latestUpdater = (
     "https://github.com/Sxmmm/GITGUI-Python/releases/download/v0.0.1/updater.exe"
 )
