@@ -1,7 +1,11 @@
+from pathlib import Path
+import shutil
 import sys
 import tkinter
 import customtkinter
 
+import requests
+import time
 from urllib.request import urlopen
 
 from GITProjectObject import GITProjectObject
@@ -19,6 +23,9 @@ customtkinter.set_default_color_theme(
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
 currentVersion = "0.0.1"
+latestUpdater = (
+    "https://github.com/Sxmmm/GITGUI-Python/releases/download/v0.0.1/updater.exe"
+)
 
 
 class App(customtkinter.CTk):
@@ -76,7 +83,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_4.grid(row=6, column=0, padx=20, pady=10)
         self.version_label = customtkinter.CTkLabel(
             self.sidebar_frame,
-            text=currentVersion,
+            text="v" + currentVersion + "\nSamBaker",
             font=customtkinter.CTkFont(size=10),
         )
         self.version_label.grid(row=7, column=0, padx=20, pady=(20, 10))
@@ -129,21 +136,23 @@ class App(customtkinter.CTk):
         print(text)
 
     def check_for_updates_event(self):
-        URL = urlopen("https://sxmhosts.000webhostapp.com/")
+        URL = urlopen("https://sxmhosts.000webhostapp.com/SamGitGUI/")
         data = URL.read().decode("utf-8")
 
         if data == currentVersion:
             print("App is up to date!")
         else:
-            print(
-                "App is not up to date! App is on version "
-                + currentVersion
-                + " but could be on version "
-                + data
-                + "!"
-            )
+            updater = requests.get(latestUpdater)
+
+            open("updater.exe", "xb").write(updater.content)
+            os.startfile("updater.exe")
+            time.sleep(1)
+            sys.exit()
 
 
 if __name__ == "__main__":
+    my_file = Path("updater.exe")
+    if my_file.is_file():
+        os.remove("updater.exe")
     app = App()
     app.mainloop()
