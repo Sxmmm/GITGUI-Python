@@ -20,9 +20,9 @@ customtkinter.set_default_color_theme(
     "blue"
 )  # Themes: "blue" (standard), "green", "dark-blue"
 
-currentVersion = "0.0.2"
+currentVersion = "0.0.3"
 latestUpdater = (
-    "https://github.com/Sxmmm/GITGUI-Python/releases/download/v0.0.1/updater.exe"
+    "https://github.com/Sxmmm/GITGUI-Python/releases/download/Updater/updater.exe"
 )
 
 

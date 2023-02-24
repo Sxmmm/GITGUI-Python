@@ -1,3 +1,4 @@
+import pathlib
 import sys
 import requests
 import time
@@ -15,7 +16,8 @@ def check_for_updates_event():
         + "/SamGitGUI.exe"
     )
 
-    open("SamGitGUI.exe", "wb").write(newVersion.content)
+    path = pathlib.Path.home().drive + "/SamsApps/SamGitGUI.exe"
+    open(path, "wb").write(newVersion.content)
 
     time.sleep(5)
 
