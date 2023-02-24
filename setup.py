@@ -6,7 +6,6 @@ import time
 from urllib.request import urlopen
 import winshell
 import win32com.client
-import pythoncom
 
 
 def create_directory():
@@ -43,6 +42,8 @@ def create_shortcut():
     shortcut.Targetpath = filePath
     shortcut.IconLocation = filePath
     shortcut.save()
+
+    os.startfile(path)
 
     sys.exit()
 

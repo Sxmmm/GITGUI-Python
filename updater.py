@@ -4,6 +4,7 @@ import requests
 import time
 from urllib.request import urlopen
 import os
+import winshell
 
 
 def check_for_updates_event():
@@ -21,7 +22,8 @@ def check_for_updates_event():
 
     time.sleep(5)
 
-    os.startfile("SamGitGUI.exe")
+    shortcutPath = os.path.join(winshell.desktop(), "SamGitGUI.lnk")
+    os.startfile(shortcutPath)
 
     sys.exit()
 
