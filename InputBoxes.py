@@ -62,7 +62,7 @@ class CTkInputDialog(customtkinter.CTkInputDialog):
         self.isB2C = False
 
 
-class CTkCheckoutcDialog(customtkinter.CTkInputDialog):
+class CTkCheckoutDialog(customtkinter.CTkInputDialog):
     def _create_widgets(self):
         super()._create_widgets()
 

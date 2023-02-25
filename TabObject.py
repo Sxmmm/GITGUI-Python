@@ -3,7 +3,7 @@ import customtkinter
 import os
 
 from GITProjectObject import GITProjectObject
-from InputBoxes import CTkCheckoutcDialog
+from InputBoxes import CTkCheckoutDialog
 
 
 class TabObject:
@@ -240,7 +240,7 @@ class TabObject:
         os.system("code " + self._tabData._projectPath + self._tabData._repoName)
 
     def checkout_project_branch(self):
-        dialog = CTkCheckoutcDialog(text="Checkout Branch", title="Checkout Branch")
+        dialog = CTkCheckoutDialog(text="Checkout Branch", title="Checkout Branch")
         branch_name = dialog.get_input()
 
         if branch_name is "":
@@ -250,7 +250,7 @@ class TabObject:
         self.update_branches()
 
     def checkout_fw_branch(self):
-        dialog = CTkCheckoutcDialog(
+        dialog = CTkCheckoutDialog(
             text="Checkout FW Branch", title="Checkout FW Branch"
         )
         branch_name = dialog.get_input()

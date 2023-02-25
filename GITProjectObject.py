@@ -80,13 +80,15 @@ class GITProjectObject:
         return self._repo.active_branch
 
     def commit_push_changes(self, type: str, code: str, message: str):
+        if len(self._repo.index.diff("HEAD")) is 0:
+            return
+
         commitString = (
             "["
             + type
             + ("] " if type == "UPDATE" else (" " + code.strip() + "] "))
             + message
         )
-        print(commitString)
         self._repo.index.commit(commitString)
         self._repo.remotes.origin.push()
 
