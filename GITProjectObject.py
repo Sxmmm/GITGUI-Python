@@ -2,6 +2,8 @@ import git
 from git import Repo
 import giturlparse
 
+from ErrorPopup import ErrorPopup
+
 
 class GITProjectObject:
     _giturl: str = ""
@@ -80,7 +82,8 @@ class GITProjectObject:
         return self._repo.active_branch
 
     def commit_push_changes(self, type: str, code: str, message: str):
-        if len(self._repo.index.diff("HEAD")) is 0:
+        if not self.has_staged_changes():
+            ErrorPopup(text="No files are staged to commit.", title="Error")
             return
 
         commitString = (
@@ -91,6 +94,9 @@ class GITProjectObject:
         )
         self._repo.index.commit(commitString)
         self._repo.remotes.origin.push()
+
+    def has_staged_changes(self):
+        return len(self._repo.index.diff("HEAD")) is not 0
 
     def checkout_project_branch(self, branch: str):
         for ref in self._repo.references:
