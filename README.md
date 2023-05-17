@@ -1,6 +1,6 @@
 # GITGUI-Python
 
-Latest version value: https://sxmhosts.000webhostapp.com/
+Latest version value: https://sxmhosts.000webhostapp.com/SamGitGUI/
 
 
 Running setup will install the latest available version.
